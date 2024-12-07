@@ -24,8 +24,6 @@ jobs:
           echo $HF_TOKEN | docker login registry.hf.space -u zhepama --password-stdin
 
       - name: Build and push Docker image
-        env:
-          IMAGE_NAME: registry.hf.space/zhepama/hf-hono
         run: |
-          docker build -t registry.hf.space/zhepama/hf-hono:latest .
-          docker push registry.hf.space/zhepama/hf-hono:latest
+          docker build -t registry.hf.space/zhepama-hfhono:latest .
+          docker push registry.hf.space/zhepama-hfhono:latest
