@@ -5,10 +5,17 @@ FROM base AS builder
 RUN apk add --no-cache gcompat
 WORKDIR /app
 
-COPY package*json tsconfig.json src ./
+# 首先复制 package.json 和 tsconfig.json
+COPY package*.json tsconfig.json ./
 
-RUN npm install && \
-    npm run build 
+# 安装依赖
+RUN npm install
+
+# 然后复制源代码
+COPY src/ ./src/
+
+# 执行构建
+RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
@@ -21,9 +28,7 @@ COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY --from=builder --chown=hono:nodejs /app/package.json /app/package.json
 
 USER hono
-# 暴露 7860 端口（而不是 3000）
 EXPOSE 7860
-# 如果你的应用使用环境变量设置端口
 ENV PORT=7860
 
 CMD ["node", "/app/dist/index.js"]
