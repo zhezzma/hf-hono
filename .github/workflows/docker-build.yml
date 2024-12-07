@@ -1,4 +1,4 @@
-name: Build and Push to HF Spaces
+name: Deploy to HF Spaces
 on:
   push:
     branches: [ master ]
@@ -10,20 +10,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # 先用 huggingface-cli 登录
-      - name: Login to HuggingFace
+        
+      # 配置 Git
+      - name: Configure Git
         run: |
-          pip install --upgrade huggingface_hub
-          huggingface-cli login --token ${{ secrets.HF_TOKEN }}
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
-      - name: Login to HuggingFace
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # 克隆 HF Space 仓库
+      - name: Clone HF Space
         run: |
-          echo $HF_TOKEN | docker login registry.hf.space -u zhepama --password-stdin
+          git clone https://zhepama:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/zhepama/hfhono space-repo
 
-      - name: Build and push Docker image
+      # 复制文件到 Space 仓库
+      - name: Copy files
         run: |
-          docker build -t registry.hf.space/zhepama-hfhono:latest .
-          docker push registry.hf.space/zhepama-hfhono:latest
+          cp -r * space-repo/
+          cd space-repo
+          git add .
+          git commit -m "Update from GitHub Actions"
+          git push
+
