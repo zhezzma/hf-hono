@@ -11,6 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 先用 huggingface-cli 登录
+      - name: Login to HuggingFace
+        run: |
+          pip install --upgrade huggingface_hub
+          huggingface-cli login --token ${{ secrets.HF_TOKEN }}
+
       - name: Login to HuggingFace
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
