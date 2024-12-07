@@ -17,17 +17,20 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      # 克隆 HF Space 仓库
+      # 克隆 HF Space 仓库并复制文件
       - name: Clone HF Space
         run: |
-          git clone https://zhepama:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/zhepama/hfhono space-repo
-
-      # 复制文件到 Space 仓库
-      - name: Copy files
-        run: |
-          cp -r * space-repo/
-          cd space-repo
+          cd ..
+          git clone https://zhepama:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/zhepama/hf-hono hf-repo
+          
+          # 使用 rsync 复制文件，排除 .git 目录和其他不需要的文件
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='.gitignore' \
+                    --exclude='node_modules' \
+                    $GITHUB_WORKSPACE/ hf-repo/
+          
+          cd hf-repo
           git add .
           git commit -m "Update from GitHub Actions"
           git push
-
