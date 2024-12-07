@@ -2,6 +2,8 @@
   "name": "hf-hono",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
@@ -9,7 +11,8 @@
     "hono": "^4.6.13"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
+    "@types/node": "^20.17.9",
+    "tsx": "^4.7.1",
+    "typescript": "^5.7.2"
   }
 }
