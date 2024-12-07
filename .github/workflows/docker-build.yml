@@ -15,11 +15,11 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          echo $HF_TOKEN | docker login registry.huggingface.co -u zhepama --password-stdin
+          echo $HF_TOKEN | docker login registry.hf.space -u zhepama --password-stdin
 
       - name: Build and push Docker image
         env:
-          IMAGE_NAME: registry.huggingface.co/zhepama/hf-hono
+          IMAGE_NAME: registry.hf.space/zhepama/hf-hono
         run: |
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
