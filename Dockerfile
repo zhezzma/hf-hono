@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package*json tsconfig.json src ./
 
-RUN npm ci && \
+RUN npm install && \
     npm run build 
 
 FROM base AS runner
