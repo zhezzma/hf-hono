@@ -15,21 +15,21 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 hono
 # 安装 cloudflared
-RUN apk add --no-cache curl && \
-    curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared && \
-    chmod +x /usr/local/bin/cloudflared && \
-    apk del curl
+# RUN apk add --no-cache curl && \
+#     curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared && \
+#     chmod +x /usr/local/bin/cloudflared && \
+#     apk del curl
 COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
 COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY --from=builder --chown=hono:nodejs /app/package.json /app/package.json
 # 创建启动脚本
 RUN echo '#!/bin/sh\n\
-if [ -z "$CLOUDFLARE_TOKEN" ]; then\n\
-    echo "警告: CLOUDFLARE_TOKEN 环境变量未设置。Cloudflare 隧道将不会启动。"\n\
-else\n\
-    echo "启动 Cloudflare 隧道..."\n\
-    cloudflared tunnel --no-autoupdate run --token $CLOUDFLARE_TOKEN &\n\
-fi\n\
+# if [ -z "$CLOUDFLARE_TOKEN" ]; then\n\
+#     echo "警告: CLOUDFLARE_TOKEN 环境变量未设置。Cloudflare 隧道将不会启动。"\n\
+# else\n\
+#     echo "启动 Cloudflare 隧道..."\n\
+#     cloudflared tunnel --no-autoupdate run --token $CLOUDFLARE_TOKEN &\n\
+# fi\n\
 echo "启动 Node.js 应用..."\n\
 exec node /app/dist/index.js' > /app/start.sh && \
     chmod +x /app/start.sh
