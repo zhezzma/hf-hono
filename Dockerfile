@@ -2,12 +2,6 @@ FROM node:20-alpine AS base
 
 FROM base AS builder
 RUN apk add --no-cache python3 make g++
-# 安装 cloudflared
-RUN apk add --no-cache curl && \
-    curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared && \
-    chmod +x /usr/local/bin/cloudflared && \
-    apk del curl
-
 
 
 WORKDIR /app
