@@ -18,12 +18,13 @@ COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
 COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY --from=builder --chown=hono:nodejs /app/package.json /app/package.json
 
-RUN echo '#!/bin/sh\n\
-echo "启动 Node.js 应用..."\n\
-exec node /app/dist/index.js' > /app/start.sh && \
-    chmod +x /app/start.sh
+# 修改这部分，使用更可靠的方式创建启动脚本
+RUN printf '#!/bin/sh\nnode /app/dist/index.js\n' > /app/start.sh && \
+    chmod +x /app/start.sh && \
+    chown hono:nodejs /app/start.sh  # 确保权限正确
 
 USER hono
 EXPOSE 7860
 ENV PORT=7860
+# 使用完整路径
 CMD ["/app/start.sh"]
